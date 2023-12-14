@@ -1,112 +1,150 @@
+<?php
+include('conexion.php');
+session_start();
+if (isset($_POST['btnlogin'])) {
+    $nombre = $_POST['txtusuario'];
+    $pass = $_POST['txtpassword'];
+    $queryusuario = mysqli_query($conn, "SELECT * FROM login WHERE log_usuario = '$nombre'");
+    $nr = mysqli_num_rows($queryusuario);
+    $buscarpass = mysqli_fetch_array($queryusuario);
+    if ($nr == 1 && password_verify($pass, $buscarpass['log_clave'])) {
+        $rol = $buscarpass['fk_rol_id'];
+        // Redirigir según el rol del usuario
+        if ($rol == '1') {
+            // Puedes redirigir si es necesario
+            header("Location: pagAdmin.php");
+            exit(); // Asegurarse de que el script se detenga aquí
+        } elseif ($rol == '2') {
+            // Puedes redirigir si es necesario
+            header("Location: pagTeso.php");
+            exit();
+        } elseif ($rol == '3') {
+            // Puedes redirigir si es necesario
+            header("Location: pagConta.php");
+            exit();
+        }
+    } else {
+        // Almacenar el mensaje de error en una variable de sesión
+        $_SESSION['error'] = "Usuario o contraseña incorrecto";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComprobantesIndex</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <style>
+    <title>Login Crisol</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="style.css">
+    <style>
         body {
-            background-color: lightblue;
+            background-image: url(imagenes/bg.jpg);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .container {
-            background-color: skyblue;
-            border-radius: 30px;
+        h2 {
+            margin-bottom: 20px;
+            color: white;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        input {
+            width: 80%;
+            max-width: 300px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            padding: 8px;
+            border: none;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+            caret-color: white;
+            transition: background 0.3s, border 0.3s;
+        }
+
+        input:hover,
+        input:focus {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid white;
+
+        }
+
+        input::placeholder {
+            color: white;
+        }
+
+        .form-group {
+            margin-top: 10px;
+        }
+
+        .logo {
+            width: 100%;
+        }
+
+        button {
+            width: 80%;
+            max-width: 300px;
+            height: 50px;
+            border: none;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+            caret-color: white;
+            transition: background 0.3s;
+            /* Agregado para una transición suave */
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
+    <script>
+        function hidePlaceholder(input) {
+            input.setAttribute('placeholder', '');
+        }
+
+        function showPlaceholder(input) {
+            input.setAttribute('placeholder', input.getAttribute('data-placeholder'));
+        }
+    </script>
 </head>
+
 <body>
-    <div class="container">
-        <h2 class="text-center">Préstamos</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <form method="post">
-                    <div class="mb-3 d-flex justify-content-between align-items-flex-end">
-                        <div class="mb-3">
-                            <label for="cedula" class="form-label">Cédula</label><br>
-                            <input type="text" class="form-control" id="cedula" name="cedula" required pattern="[0-9]{10}" value="<?php echo isset($_POST['cedula']) ? htmlspecialchars($_POST['cedula']) : ''; ?>" placeholder="Ingrese 10 dígitos" style="margin-right: 250px;">
-                        </div>
-                        <button class="btn btn-primary" style="margin-top: 30px; margin-bottom: 30px;" name="buscar">Buscar</button>
-                    </div>
-
-                    <div class="mb-3" style="margin-top: -27px; margin-bottom: 30px;">
-                        <label for="monto" class="form-label">Monto solicitado</label>
-                        <input type="text" class="form-control" id="monto" name="monto" max="6000" placeholder="Límite $6.000">
-                    </div>
-                    <div class="mb-3">
-                        <label for="tipo" class="form-label">Tipo de préstamo</label>
-                        <select class="form-control" name="tipo">
-                            <option value="comercio">Comercio</option>
-                            <option value="agropecuario">Agropecuario</option>
-                            <option value="bienes">Bienes</option>
-                            <option value="servicios">Servicios</option>
-                            <option value="consumo">Consumo</option>
-                            <option value="vivienda">Vivienda</option>
-                            <option value="salud">Salud</option>
-                            <option value="educacion">Educación</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                    <input type="submit" value="Enviar">
-                    <input type="submit" id="imprimirBoton" class="btn btn-primary" onclick="abrirVentanaEmergente()" value="Imprimir Factura">
-                </form>
-            </div>
-
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombre_socio" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre_socio" readonly="true">
-                </div>
-
-                <div class="mb-3">
-                    <label for="fecha" class="form-label">Fecha</label>
-                    <input type="text" class="form-control" id="fecha" required readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="cuota" class="form-label">Cuotas</label>
-                    <input type="text" class="form-control" id="cuota" required>
-                </div>
+    <div class="container ">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-1 w-50">
+                <img src="imagenes/logoCaja.png" alt="Logo" class="logo">
             </div>
         </div>
-
-        <center>
-            <button type="button" class="btn btn-outline-secondary" onclick="limpiarCampos()">Limpiar</button>
-        </center>
+        <div class="row justify-content-center mt-3 ">
+            <div class="col-md-6 col-lg-4">
+                <h2 class="mb-4 text-center text-with-relief">LOGIN</h2>
+                <form action="" method="post" class="d-flex flex-column  justify-content-center">
+                    <input type="text" class="rounded-5 mb-2" placeholder="Usuario" data-placeholder="Usuario" name="txtusuario" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
+                    <input type="password" class="rounded-5 mb-2" placeholder="Contraseña" data-placeholder="Contraseña" name="txtpassword" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
+                    <button type="submit" name="btnlogin" class="bg-white px-3 rounded-5">Ingresar</button>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <?php
-    include("consulta.php");
-    ?>
-
-<script>
-    // Obtener la fecha actual
-    const today = new Date();
-    const dateOnly = today.getDate();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    
-    // Establezca el valor del campo de fecha en la fecha y hora
-    document.getElementById("fecha").value = day + "/" + month + "/" + year;
-
-    function abrirVentanaEmergente() {
-    // Obtener el valor del campo nombre_socio
-    var nombreSocio = document.getElementById('nombre_socio').value;
-    var cedula1 = document.getElementById('cedula').value;
-
-    // Eliminar los espacios en blanco al principio y al final del valor de cedula1
-    cedula1 = cedula1.trim();
-
-    // Construir la URL con múltiples parámetros
-    var url = 'comprobante.php?nombreSocio=' + encodeURIComponent(nombreSocio) + '&cedula1=' + encodeURIComponent(cedula1);
-
-    // Abrir la ventana emergente con la URL que incluye los parámetros
-    var nuevaVentana = window.open(url, '_blank', 'width=500,height=600');
-    nuevaVentana.focus();
-}
-</script>
-
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
