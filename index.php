@@ -1,12 +1,47 @@
 <?php
-include('conexion.php');
-session_start();
-if (isset($_POST['btnlogin'])) {
+include("conexion.php");
+
+
+// Registrar al Sistema 
+
+if(isset($_POST['btnRegistrar']))
+{
     $nombre = $_POST['txtusuario'];
     $pass = $_POST['txtpassword'];
-    $queryusuario = mysqli_query($conn, "SELECT * FROM login WHERE log_usuario = '$nombre'");
+    $pass_fuerte=password_hash($pass,PASSWORD_DEFAULT);
+    $queryregistrar="INSERT INTO login(log_usuario,log_clave,fk_rol_id)values ('$nombre','$pass_fuerte','1')";
+    if(mysqli_query($conn,$queryregistrar))
+    {
+        echo "<script> alert ('Usuario registrado: $nombre');windos.location.host='index.php' </script>";
+    }  else
+    {
+        echo "Error:".$queryregistrar."<br>".mysql_error($conn);
+    }
+
+} 
+
+//Ingresar al Sistema  
+
+if(isset($_POST['btnlogin']))
+{
+    $nombre = $_POST['txtusuario'];
+    $pass = $_POST['txtpassword'];
+    $queryusuario = mysqli_query( $conn,"SELECT *FROM login WHERE log_usuario= '$nombre'");
     $nr = mysqli_num_rows($queryusuario);
-    $buscarpass = mysqli_fetch_array($queryusuario);
+    $buscarpass = mysqli_fetch_array ($queryusuario);
+    
+//desincriptación
+
+    if(($nr == 1)&& (password_verify($pass,$buscarpass['log_clave'])))
+    {
+        //echo "Bienvenido: $nombre ";
+        header("Location:prueba.html");
+    }
+    else 
+    {
+        echo "<script> alert ('Usuario o contraseña incorrecto');windos.location.host='index.php' </script> ";  
+    }
+    //validar rol 
     if ($nr == 1 && password_verify($pass, $buscarpass['log_clave'])) {
         $rol = $buscarpass['fk_rol_id'];
         // Redirigir según el rol del usuario
@@ -20,7 +55,11 @@ if (isset($_POST['btnlogin'])) {
             exit();
         } elseif ($rol == '3') {
             // Puedes redirigir si es necesario
-            header("Location: pagConta.php");
+            header("Location: pagCont.php");
+            exit();
+        } elseif ($rol == '4') {
+            // Puedes redirigir si es necesario
+            header("Location: pagPresi.php");
             exit();
         }
     } else {
@@ -28,6 +67,7 @@ if (isset($_POST['btnlogin'])) {
         $_SESSION['error'] = "Usuario o contraseña incorrecto";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -137,11 +177,13 @@ if (isset($_POST['btnlogin'])) {
             <div class="col-md-6 col-lg-4">
                 <h2 class="mb-4 text-center text-with-relief">LOGIN</h2>
                 <form action="" method="post" class="d-flex flex-column  justify-content-center">
-                    <input type="text" class="rounded-5 mb-2" placeholder="Usuario" data-placeholder="Usuario" name="txtusuario" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
-                    <input type="password" class="rounded-5 mb-2" placeholder="Contraseña" data-placeholder="Contraseña" name="txtpassword" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
+                    <input type="text" class="rounded-5 mb-2" placeholder="Usuario" data-placeholder="Usuario" name="txtusuario"id="txtusuario"onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
+                    <input type="password" class="rounded-5 mb-2" placeholder="Contraseña" data-placeholder="Contraseña" name="txtpassword" id="txtpassword" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
                     <button type="submit" name="btnlogin" class="bg-white px-3 rounded-5">Ingresar</button>
+                    <a style="color: #FFFBFB "href="Recuperar_Contrasena.php" class="forgot-password">  ¿Olvidaste tu contraseña?</a>
                 </form>
-            </div>
+
+            </div>    
         </div>
     </div>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
