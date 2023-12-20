@@ -84,7 +84,7 @@ if (!isset($_SESSION)) {
               </button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" id="pagAporLink">Pago Aportes</a>
-                <a class="dropdown-item" href="#" id="pagNueScLink">Pago Nuevo Socio</a>
+                <a class="dropdown-item" href="#">Definir</a>
               </div>
             </div>
           </li>
@@ -97,8 +97,7 @@ if (!isset($_SESSION)) {
                 Egresos
               </button>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="#" id="liquiSocioLink">Solicitud Liquidación</a>
-                <a class="dropdown-item" href="#" id="liquiPenSocioLink">Liquidaciónes Pendientes</a>
+                <a class="dropdown-item" href="#" id="liquiSocioLink">Liquidación</a>
                 <a class="dropdown-item" href="#">Caja Chica</a>
               </div>
             </div>
@@ -113,38 +112,12 @@ if (!isset($_SESSION)) {
               </button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#" id="soliPresLink">Solicitud Préstamo</a>
-                <a class="dropdown-item" href="#" id="AproPresLink">Aprobación Préstamos </a>
-              </div>
-            </div>
-          </li>
-
-          <!-- Dropdown para Reportes -->
-          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
-            <img src="iconos/balance-sheet-icon.svg" alt="Icono de Reportes" class="mr-2 w-25" />
-            <div class="dropdown">
-              <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Reportes
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Definir</a>
                 <a class="dropdown-item" href="#">Definir</a>
               </div>
             </div>
           </li>
 
-          <!-- Dropdown para Administrador -->
-          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
-            <img src="iconos/administrator-developer-icon.svg" alt="Icono de Administrador" class="mr-2 w-25 " />
-            <div class="dropdown">
-              <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Admin
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Definir</a>
-                <a class="dropdown-item" href="#">Definir</a>
-              </div>
-            </div>
-          </li>
+        
 
         </ul>
       </div>
@@ -184,28 +157,10 @@ if (!isset($_SESSION)) {
       cargarContenidoMostrar("formActSc.php");
     });
 
-    // Manejar el clic en "Pago aportes"
-    $("#pagAporLink").on("click", function(e) {
-      e.preventDefault();
-      cargarContenidoMostrar("formPagApor.php");
-    });
-
-    // Manejar el clic en "Pago nuevo socio"
-    $("#pagNueScLink").on("click", function(e) {
-      e.preventDefault();
-      cargarContenidoMostrar("formPagNueSc.php");
-    });
-
     // Manejar el clic en "Liquidación"
     $("#liquiSocioLink").on("click", function(e) {
       e.preventDefault();
       cargarContenidoMostrar("formLiqui.php");
-    });
-
-    // Manejar el clic en "Liquidaciones pendientes"
-    $("#liquiPenSocioLink").on("click", function(e) {
-      e.preventDefault();
-      cargarContenidoMostrar("formPagLiqui.php");
     });
 
     // Manejar el clic en "Socicitud préstamo"
@@ -214,10 +169,10 @@ if (!isset($_SESSION)) {
       cargarContenidoMostrar("formPres.php");
     });
 
-    // Manejar el clic en "Socicitud préstamo"
-    $("#AproPresLink").on("click", function(e) {
+    // Manejar el clic en "Pago aportes"
+    $("#pagAporLink").on("click", function(e) {
       e.preventDefault();
-      cargarContenidoMostrar("formSolicitudPend.php");
+      cargarContenidoMostrar("formPagApor.php");
     });
   </script>
 </body>
