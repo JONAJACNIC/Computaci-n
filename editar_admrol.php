@@ -31,30 +31,44 @@ if (isset($_POST['editar'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuario</title>
+    <link rel="stylesheet" href="style.css">
+ 
 </head>
 <body>
 
-<h2>Editar Usuario</h2>
+<div class="container-fluid">
+        <h5 class="text-center">Editar Usuario</h5>
+        <form method="post" action="">
+            
+            <input type="hidden" name="userId" value="<?php echo $userData['pk_log_id']; ?>">
+            <div class="form-group">
+                <label for="nuevoUsuario" class="form-label"> Usuario:</label>
+                <input type="text" name="nuevoUsuario"  class="form-control" value="<?php echo $userData['log_usuario']; ?>" required>
+            </div>
 
-<form method="post" action="">
-    <input type="hidden" name="userId" value="<?php echo $userData['pk_log_id']; ?>">
+            <div class="form-group">
+            <label for="nuevaClave">Nueva Contraseña:</label>
+            <input type="password" name="nuevaClave" class="form-control"  required>
+            </div>
+            <br>
 
-    <label for="nuevoUsuario">Cambiar Usuario:</label>
-    <input type="text" name="nuevoUsuario" value="<?php echo $userData['log_usuario']; ?>" required><br>
-
-    <label for="nuevaClave">Nueva Contraseña:</label>
-    <input type="password" name="nuevaClave" required><br>
-
-    <label for="nuevoRol">Cambiar Rol:</label>
-    <select name="nuevoRol" required>
-        <option value="1" <?php echo ($userData['fk_rol_id'] == 1) ? 'selected' : ''; ?>>Administrador</option>
-        <option value="2" <?php echo ($userData['fk_rol_id'] == 2) ? 'selected' : ''; ?>>Tesorero</option>
-        <option value="3" <?php echo ($userData['fk_rol_id'] == 3) ? 'selected' : ''; ?>>Contador</option>
-        <option value="4" <?php echo ($userData['fk_rol_id'] == 4) ? 'selected' : ''; ?>>Presidente</option>
-    </select><br>
-
-    <input type="submit" name="editar" value="Editar">
-</form>
-
+            <div class="form-group">
+            <label for="nuevoRol">Cambiar Rol:</label>
+            <select name="nuevoRol" required>
+            <option value="1" <?php echo ($userData['fk_rol_id'] == 1) ? 'selected' : ''; ?>>Administrador</option>
+            <option value="2" <?php echo ($userData['fk_rol_id'] == 2) ? 'selected' : ''; ?>>Tesorero</option>
+            <option value="3" <?php echo ($userData['fk_rol_id'] == 3) ? 'selected' : ''; ?>>Contador</option>
+            <option value="4" <?php echo ($userData['fk_rol_id'] == 4) ? 'selected' : ''; ?>>Presidente</option>
+            </select>
+             </div>
+             <br>
+            <div class="mb-6">
+                <input type="submit" class="btn btn-success" name="editar" value="Editar"> 
+           
+            <a href="formAdmRol.php" class="btn btn-danger">Cancelar</a>
+            </div>
+    <!-- <input type="submit" name="editar" value="Editar"> -->
+        </form>
+</div>
 </body>
 </html>
