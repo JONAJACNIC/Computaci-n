@@ -88,7 +88,7 @@ $fechaActual = date("Y-m-d");
                                 <option value=""> ---- </option>
                                 <?php
                                 // Consulta para obtener los datos de la tabla tipo de egresos
-                                $sql = "SELECT pk_tp_egre_id, tp_egre_dsc FROM tipo_egreso where pk_tp_egre_id IN (1, 2, 3);";
+                                $sql = "SELECT pk_tp_egre_id, tp_egre_dsc FROM tipo_egreso where pk_tp_egre_id IN (1, 2, 3, 4);";
                                 $result = $conn->query($sql);
                                 // Generar las opciones dinámicamente
                                 while ($row = $result->fetch_assoc()) {
@@ -170,8 +170,39 @@ $fechaActual = date("Y-m-d");
             <div class="py-2 text-center">
                 <input type="submit" value="Registrar" id="btnRegistrar" name="btnRegistrar" class="btn btn-outline-success">
                 <input type="submit" value="Limpiar" class="btn btn-outline-success">
-                <input type="submit" value="Imprimir" class="btn btn-outline-success">
+                <button type="button" class="btn btn-outline-success" onclick="imprimir()">Imprimir</button>
                 <input type="submit" value="Eliminar" class="btn btn-outline-success">
+                <script>
+            function imprimir (){
+            // Obtener valores de nombreSocio y cedula1
+            var nombreSocio = document.getElementById("nombre").value;
+              var apellidoSocio = document.getElementById("apellido").value;
+              var cedula1 = document.getElementById("cedula").value;
+              var fechadesem =document.getElementById("fechaDes").value;
+              var causaliqui = document.getElementById("tpLiqui").options[document.getElementById("tpLiqui").selectedIndex].text;
+              var metodpag =document.getElementById("tpPago").options[document.getElementById("tpPago").selectedIndex].text;;
+              var capitalE =document.getElementById("capital").value;
+              var prestamos =document.getElementById("prest").value;
+              var multa =document.getElementById("multas").value;
+              var descuento =document.getElementById("totalR").value;
+              var totalLiqui =document.getElementById("total").value;
+              var url = "comproLiqui.php?" +
+                "nombreSocio=" + encodeURIComponent(nombreSocio) +
+                "&apellidoSocio=" + encodeURIComponent(apellidoSocio) +
+                "&cedula1=" + encodeURIComponent(cedula1) +
+                "&fechadesem=" + encodeURIComponent(fechadesem)+
+                "&causaliqui=" + encodeURIComponent(causaliqui)+
+                "&metodpag=" + encodeURIComponent(metodpag)+
+                "&capitalE=" + encodeURIComponent(capitalE)+
+                "&prestamos=" + encodeURIComponent(prestamos)+
+                "&multa=" + encodeURIComponent(multa)+
+                "&descuento=" + encodeURIComponent(descuento)+
+                "&totalLiqui=" + encodeURIComponent(totalLiqui); 
+
+              // Redirigir a la nueva URL
+              window.location.href = url;
+        }
+        </script>
             </div>
         </form>
         <!-- Contenedor de Alertas -->
