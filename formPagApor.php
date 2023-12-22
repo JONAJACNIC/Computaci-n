@@ -3,7 +3,6 @@ include('guardar_dato.php');
 include("conexion.php");
 $fechaActual = date("Y-m-d");
 $cta_sc_id = 0;
-$total_multas = "";
 // Iniciar sesión si no está iniciada
 session_start();
 if (!empty($_SESSION['datos_formulario'])) {
@@ -19,26 +18,12 @@ if (!empty($_SESSION['datos_formulario'])) {
     $cta_sc_id = $row_cta_sc_id['pk_cta_sc_id'];
 
     // Consulta para obtener las aportaciones asociadas a la cuenta del socio
-    $sql_aportaciones = "SELECT a.pk_aprt_id, a.aprt_fech, f.cert_val, f.cert_det, fe.fon_val, fe.fon_det,
-    COALESCE(SUM(m.mult_total), 0) AS total_multas
-FROM
-    aportaciones a
-    INNER JOIN certificado f ON a.fk_cert_id = f.pk_cert_id
-    INNER JOIN fondo_estrategico fe ON a.fk_fon_id = fe.pk_fon_id
-    LEFT JOIN multa m ON a.fk_cta_sc_id = m.fk_cta_sc_id
-WHERE
-    a.fk_cta_sc_id = $cta_sc_id
-GROUP BY
-    a.pk_aprt_id, a.aprt_fech, f.cert_val, f.cert_det, fe.fon_val, fe.fon_det;";
+    $sql_aportaciones = "SELECT a.pk_aprt_id, a.aprt_fech, f.cert_val, f.cert_det, fe.fon_val, fe.fon_det
+                          FROM aportaciones a
+                          INNER JOIN certificado f ON a.fk_cert_id = f.pk_cert_id
+                          INNER JOIN fondo_estrategico fe ON a.fk_fon_id = fe.pk_fon_id
+                          WHERE a.fk_cta_sc_id = $cta_sc_id";
     $result_aportaciones = $conn->query($sql_aportaciones);
-    if ($result_aportaciones->num_rows > 0) {
-      // Obtener la primera fila
-      while ($row_aportaciones = $result_aportaciones->fetch_assoc()) {
-        $total_multas = $row_aportaciones['total_multas'];
-        // Por ejemplo, imprimirlos en la página
-        //echo "ID: $pk_aprt_id, Fecha: $aprt_fech, Certificado: $cert_val, Detalle: $cert_det, Fondo: $fon_val, Detalle: $fon_det, Multas: $total_multas<br>";
-      }
-    }
   }
 }
 
@@ -111,6 +96,8 @@ function generarTabla($result_aportaciones)
 
   echo '</tbody>';
   echo '</table>';
+
+  return $result_aportaciones;
 }
 ?>
 <!DOCTYPE html>
@@ -150,19 +137,25 @@ function generarTabla($result_aportaciones)
               <!-- Campo nombres -->
               <div class="col-md-3 d-flex align-items-center">
                 <label for="nombre" class="form-label">Nombres</label>
-                <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo isset($datosFormulario['nombre']) ? htmlspecialchars($datosFormulario['nombre']) : ''; ?>" readonly>
+                <input type="text" class="form-control" name="nombre" id="nombre"
+                  value="<?php echo isset($datosFormulario['nombre']) ? htmlspecialchars($datosFormulario['nombre']) : ''; ?>"
+                  readonly>
               </div>
               <!-- fin campo nombres -->
               <!-- Campo apellidos -->
               <div class="col-md-3 d-flex align-items-center">
                 <label for="apellido" class="form-label">Apellidos</label>
-                <input type="text" class="form-control" name="apellido" id="apellido" value="<?php echo isset($datosFormulario['apellido']) ? htmlspecialchars($datosFormulario['apellido']) : ''; ?>" readonly>
+                <input type="text" class="form-control" name="apellido" id="apellido"
+                  value="<?php echo isset($datosFormulario['apellido']) ? htmlspecialchars($datosFormulario['apellido']) : ''; ?>"
+                  readonly>
               </div>
               <!-- fin campo apellidos -->
               <!-- Campo cédula -->
               <div class="col-md-2 d-flex align-items-center">
                 <label for="cedula" class="form-label ">Cédula</label>
-                <input type="text" class="form-control" name="cedula" id="cedula" value="<?php echo isset($datosFormulario['cedula']) ? htmlspecialchars($datosFormulario['cedula']) : ''; ?>" required readonly>
+                <input type="text" class="form-control" name="cedula" id="cedula"
+                  value="<?php echo isset($datosFormulario['cedula']) ? htmlspecialchars($datosFormulario['cedula']) : ''; ?>"
+                  required readonly>
               </div>
               <!-- fin campo cédula -->
             </div>
@@ -195,6 +188,7 @@ function generarTabla($result_aportaciones)
               echo '</div>';
             }
             ?>
+
             <!-- fin tabla aportaciones -->
           </div>
         </div>
@@ -209,13 +203,14 @@ function generarTabla($result_aportaciones)
               <!-- fecha pago -->
               <div class="col-md-3 d-flex ">
                 <label for="fechap" class="form-label me-5">Fecha</label>
-                <input type="date" class="form-control w-50" name="fechap" id="fechap" value="<?php echo date("Y-m-d"); ?>" readonly>
+                <input type="date" class="form-control w-50" name="fechap" id="fechap"
+                  value="<?php echo date("Y-m-d"); ?>" readonly>
               </div>
               <!-- fin fecha pago -->
               <!-- multas -->
               <div class="col-md-3 d-flex ">
                 <label for="multas" class="form-label me-5">Multas</label>
-                <input type="text" class="form-control w-50" name="multas" id="multas" value="<?php echo $total_multas; ?>" readonly>
+                <input type="text" class="form-control w-50" name="multas" id="multas" value="" readonly>
               </div>
               <!-- fin multas -->
               <!-- total a pagar -->
@@ -232,7 +227,54 @@ function generarTabla($result_aportaciones)
         <!-- fin valores a cancelar -->
         <div class="py-2 text-center">
           <input type="submit" value="Registrar" id="btnRegistrar" name="btnRegistrar" class="btn btn-outline-success">
-          <button type="button" class="btn btn-outline-success">Imprimir</button>
+          <button type="button" class="btn btn-outline-success" onclick="imprimir()">Imprimir</button>
+          <script>
+            function imprimir() {
+              var valores = [];
+              var checkboxesSeleccionados = document.querySelectorAll('input[name="Pago[]"]:checked');
+
+              // Obtener valores de nombreSocio y cedula1
+              var nombreSocio = document.getElementById("nombre").value;
+              var apellidoSocio = document.getElementById("apellido").value;
+              var cedula1 = document.getElementById("cedula").value;
+
+              // Obtener los detalles seleccionados
+              var detallesSeleccionados = obtenerDetallesSeleccionados();
+
+              // Construir la URL con todos los parámetros
+              var url = "comprobIngre.php?" +
+                "nombreSocio=" + encodeURIComponent(nombreSocio) +
+                "&apellidoSocio=" + encodeURIComponent(apellidoSocio) +
+                "&cedula1=" + encodeURIComponent(cedula1) +
+                "&detallesSeleccionados=" + encodeURIComponent(JSON.stringify(detallesSeleccionados));
+
+              // Redirigir a la nueva URL
+              window.location.href = url;
+            }
+
+            function obtenerDetallesSeleccionados() {
+              var detalles = [];
+              var checkboxesSeleccionados = document.querySelectorAll('input[name="Pago[]"]:checked');
+
+              checkboxesSeleccionados.forEach(function (checkbox) {
+                var fila = checkbox.closest("tr");
+                var certificado = fila.cells[0].textContent.trim(); // Ajusta el índice según tu estructura de tabla y elimina espacios en blanco
+                var fondoEstrategico = fila.cells[1].textContent.trim(); // Ajusta el índice según tu estructura de tabla y elimina espacios en blanco
+                var mes = fila.cells[2].textContent.trim(); // Ajusta el índice según tu estructura de tabla y elimina espacios en blanco
+                var detalleCertificado = fila.cells[3].textContent.trim(); // Ajusta el índice según tu estructura de tabla y elimina espacios en blanco
+
+                detalles.push({
+                  certificado: certificado,
+                  fondoEstrategico: fondoEstrategico,
+                  mes: mes,
+                  detalleCertificado: detalleCertificado
+                });
+              });
+
+              return detalles;
+            }
+
+          </script>
         </div>
       </div>
     </form>
@@ -242,7 +284,7 @@ function generarTabla($result_aportaciones)
   </div>
   <script src="scrip.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       // Obtener todos los checkboxes por su nombre
       var checkboxes = document.getElementsByName("Pago[]");
 
@@ -250,8 +292,8 @@ function generarTabla($result_aportaciones)
       var ultimoSeleccionado = -1;
 
       // Agregar un evento de clic a cada checkbox
-      checkboxes.forEach(function(checkbox, index) {
-        checkbox.addEventListener("change", function() {
+      checkboxes.forEach(function (checkbox, index) {
+        checkbox.addEventListener("change", function () {
           // Verificar si el checkbox se seleccionó
           if (checkbox.checked) {
             // Verificar si se está seleccionando en orden
@@ -284,7 +326,7 @@ function generarTabla($result_aportaciones)
         var sumaTotal = 0;
 
         // Iterar sobre los checkboxes seleccionados
-        checkboxesSeleccionados.forEach(function(checkbox) {
+        checkboxesSeleccionados.forEach(function (checkbox) {
           // Obtener la fila correspondiente a este checkbox
           var fila = checkbox.closest("tr");
 
@@ -311,7 +353,7 @@ function generarTabla($result_aportaciones)
         var fechas = [];
         var checkboxesSeleccionados = document.querySelectorAll('input[name="Pago[]"]:checked');
 
-        checkboxesSeleccionados.forEach(function(checkbox) {
+        checkboxesSeleccionados.forEach(function (checkbox) {
           var fila = checkbox.closest("tr");
           var fecha = fila.cells[2].textContent.trim(); // Ajusta el índice según tu estructura de tabla y elimina espacios en blanco
           fechas.push(fecha);
