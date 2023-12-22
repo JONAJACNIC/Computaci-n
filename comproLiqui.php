@@ -149,14 +149,15 @@ $totalLiqui = $_GET['totalLiqui'];
         </div>
         <div class="card">
              <!-- Cuadro Datos generales -->
+             <div class="card-header fw-bold" style="font-size: 1.2em;">Datos Generales</div>
              <div class="suma-detalle">
                 <p><b>Fecha de Solicitud:</b> <span id="fechaSolicitud" class="no-bold"></span></p>
                 <p><strong>Fecha de Desembolso : </strong><?php echo $fechadesem; ?></p>
                 <p><strong>Causa Liquidación: </strong><?php echo $causaliqui; ?></p>
                 <p><strong>Metodo de Pago: </strong><?php echo $metodpag; ?></p>
                 </div>
-            <div class="card-header fw-bold">
-               Calculo Liquidacion
+            <div class="card-header fw-bold"style="font-size: 1.2em;">Calculo Liquidación
+           
             </div>
             <div class="card-body">
                 <table>
