@@ -125,8 +125,27 @@ include('regtPagNueSc.php');
             <div class="text-center m-1">
                 <input type="submit" value="Registrar" id="btnRegistrar" name="btnRegistrar" class="btn btn-outline-success">
                 <input type="submit" value="Limpiar" class="btn btn-outline-success">
-                <input type="submit" value="Imprimir" class="btn btn-outline-success">
+                <button type="button" class="btn btn-outline-success" onclick="imprimir()">Imprimir</button>
                 <input type="hidden" value="Eliminar" class="btn btn-outline-success">
+                <script>
+            function imprimir (){
+            // Obtener valores de nombreSocio y cedula1
+            var nombreSocio = document.getElementById("nombre").value;
+              var apellidoSocio = document.getElementById("apellido").value;
+              var cedula1 = document.getElementById("cedula").value;
+              var montpag = document.getElementById("valPag").value;
+              var montpend =document.getElementById("valSob").value;
+              var url = "comproNS.php?" +
+                "nombreSocio=" + encodeURIComponent(nombreSocio) +
+                "&apellidoSocio=" + encodeURIComponent(apellidoSocio) +
+                "&cedula1=" + encodeURIComponent(cedula1)+
+                "&montpag=" +encodeURIComponent(montpag)+
+                "&montpend=" +encodeURIComponent(montpend); 
+
+              // Redirigir a la nueva URL
+              window.location.href = url;
+        }
+        </script>
             </div>
         </form>
         <!-- Contenedor de Alertas -->
@@ -161,6 +180,13 @@ include('regtPagNueSc.php');
             deshabilitarCamposExcepto("buscar", "idSoc");
 
         });
+
+      
+    </script>
+    
+</body>
+
+</html>
 
       
     </script>
