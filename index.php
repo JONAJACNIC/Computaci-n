@@ -1,83 +1,76 @@
 <?php
+session_start();
 include("conexion.php");
+// Definir límite de intentos y tiempo de bloqueo
+$maxIntentos = 3;
+$tiempoBloqueo = 20; // 5 minutos en segundos
 
-
-// Registrar al Sistema 
-
-if(isset($_POST['btnRegistrar']))
-{
-    $nombre = $_POST['txtusuario'];
-    $pass = $_POST['txtpassword'];
-    $pass_fuerte=password_hash($pass,PASSWORD_DEFAULT);
-    $queryregistrar="INSERT INTO login(log_usuario,log_clave,fk_rol_id)values ('$nombre','$pass_fuerte','1')";
-    if(mysqli_query($conn,$queryregistrar))
-    {
-        echo "<script> alert ('Usuario registrado: $nombre');windos.location.host='index.php' </script>";
-    }  else
-    {
-        echo "Error:".$queryregistrar."<br>".mysql_error($conn);
-    }
-
-} 
-
+// Verificar si se ha alcanzado el límite de intentos en el tiempo establecido
+if (isset($_SESSION['intentos']) && isset($_SESSION['tiempoBloqueo']) && time() - $_SESSION['tiempoBloqueo'] < $tiempoBloqueo) {
+    $tiempoRestante = $tiempoBloqueo - (time() - $_SESSION['tiempoBloqueo']);
+    echo "<script>alert('Has excedido el límite de intentos. Inténtalo nuevamente después de " . gmdate("i:s", $tiempoRestante) . ".');</script>";
+    exit();
+}
 //Ingresar al Sistema  
 
-if(isset($_POST['btnlogin']))
-{
+if(isset($_POST['btnlogin'])){
     $nombre = $_POST['txtusuario'];
     $pass = $_POST['txtpassword'];
-    $queryusuario = mysqli_query( $conn,"SELECT *FROM login WHERE log_usuario= '$nombre'");
-    $nr = mysqli_num_rows($queryusuario);
-    $buscarpass = mysqli_fetch_array ($queryusuario);
-    
-//desincriptación
+    $sql = mysqli_query( $conn,"SELECT *FROM login WHERE log_usuario= '$nombre'");
+    $nr = mysqli_num_rows($sql);
+    $buscarpass = mysqli_fetch_array ($sql);
 
-    if(($nr == 1)&& (password_verify($pass,$buscarpass['log_clave'])))
-    {
-        //echo "Bienvenido: $nombre ";
-        header("Location:prueba.html");
-    }
-    else 
-    {
-        echo "<script> alert ('Usuario o contraseña incorrecto');windos.location.host='index.php' </script> ";  
-    }
-    //validar rol 
-    if ($nr == 1 && password_verify($pass, $buscarpass['log_clave'])) {
+     if ($nr == 1 && password_verify($pass, $buscarpass['log_clave'])) {
         $rol = $buscarpass['fk_rol_id'];
-        // Redirigir según el rol del usuario
-        if ($rol == '1') {
-            // Puedes redirigir si es necesario
-            header("Location: pagAdmin.php");
-            exit(); // Asegurarse de que el script se detenga aquí
-        } elseif ($rol == '2') {
-            // Puedes redirigir si es necesario
-            header("Location: pagTeso.php");
-            exit();
-        } elseif ($rol == '3') {
-            // Puedes redirigir si es necesario
-            header("Location: pagCont.php");
-            exit();
-        } elseif ($rol == '4') {
-            // Puedes redirigir si es necesario
-            header("Location: pagPresi.php");
-            exit();
+        $estado= $buscarpass['pk_esl_id'];
+            if ($estado ==1){
+                // Redirigir según el rol del usuario
+                if ($rol == '1') {
+                // Puedes redirigir si es necesario
+                header("Location: pagAdmin.php");
+                exit(); // Asegurarse de que el script se detenga aquí
+                } elseif ($rol == '2') {
+                // Puedes redirigir si es necesario
+                header("Location: pagTeso.php");
+                exit();
+                } elseif ($rol == '3') {
+                // Puedes redirigir si es necesario
+                header("Location: pagCont.php");
+                exit();
+                } elseif ($rol == '4') {
+                // Puedes redirigir si es necesario
+                 header("Location: pagPresi.php");
+                exit();
+                }
+             }else{
+                    echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+                        Usaurio inabilitado 
+                  </div>';
+                }
+            }else {
+                echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+                Contraseña Incorrecta 
+                 </div>';
+            }
+                    $_SESSION['intentos'] = isset($_SESSION['intentos']) ? $_SESSION['intentos'] + 1 : 1;
+                    // Verificar si se ha alcanzado el límite de intentos
+                    if ($_SESSION['intentos'] >= $maxIntentos) {
+                        $_SESSION['tiempoBloqueo'] = time();
+                        $_SESSION['intentos'] = 0; // Reiniciar intentos
+                        echo "<script>alert('Has excedido el límite de intentos. Inténtalo nuevamente después de " . gmdate("i:s", $tiempoBloqueo) . ".');</script>";
+                    exit();
+                        }
         }
-    } else {
-        // Almacenar el mensaje de error en una variable de sesión
-        $_SESSION['error'] = "Usuario o contraseña incorrecto";
-    }
-}
-
+    
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <head>
     <title>Login Crisol</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="style.css">
     <style>
         body {
             background-image: url(imagenes/bg.jpg);
@@ -180,13 +173,15 @@ if(isset($_POST['btnlogin']))
                     <input type="text" class="rounded-5 mb-2" placeholder="Usuario" data-placeholder="Usuario" name="txtusuario"id="txtusuario"onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
                     <input type="password" class="rounded-5 mb-2" placeholder="Contraseña" data-placeholder="Contraseña" name="txtpassword" id="txtpassword" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
                     <button type="submit" name="btnlogin" class="bg-white px-3 rounded-5">Ingresar</button>
-                    <a style="color: #FFFBFB "href="Recuperar_Contrasena.php" class="forgot-password">  ¿Olvidaste tu contraseña?</a>
+                    <a  class="row justify-content-center mt-3 " style="color: #FFFBFB "href="Recuperar_Contrasena.php" class="forgot-password">  ¿Olvidaste tu contraseña?</a>
                 </form>
 
             </div>    
         </div>
     </div>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+
 </body>
 
 </html>
