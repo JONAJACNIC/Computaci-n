@@ -26,26 +26,31 @@ if (!isset($_SESSION)) {
 </head>
 
 <body>
-  <!-- Barra horizontal -->
-  <div class="container-fluid p-0 border-bottom border-primary-subtle border-3" style="height:12vh">
-    <nav class="navbar navbar-expand-lg bg-primary h-100">
-      <div class="d-flex justify-content-between align-items-center w-100">
-        <!-- Logo en la parte izquierda -->
-        <img src="imagenes/logoCaja.png" alt="Logo" class="navbar-brand img-fluid" style="max-height: 95px" />
-        <!-- Icono en la parte superior derecha -->
-        <div class="position-relative me-4">
-          <img src="imagenes/default-profile-picture-male-icon.png" alt="Logo" class="  navbar-brand img-fluid ms-5" style="max-height: 62px; cursor: pointer; filter: invert(1);" onclick="toggleMenu()">
-          <div class="menu-content position-absolute d-none me-5 bg-warning-subtle rounded  border border-5 border-black" id="menuContent" style="z-index: 1000;">
-            <!-- Opción 1: Cerrar Sesión -->
-            <a class="btn btn-link text-dark d-block text-truncate" href="index.php">Cerrar Sesión</a>
-            <!-- Opción 2: Cambiar Sesión -->
-            <!-- <a class="btn btn-link text-dark d-block text-truncate" href="">Cambiar Sesión</a> -->
+<!-- Barra horizontal -->
+<div class="container-fluid p-0 border-bottom border-primary-subtle border-3" style="height: 12vh">
+  <nav class="navbar navbar-expand-lg bg-primary h-100">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <!-- Logo en la parte izquierda -->
+      <img src="imagenes/logoCaja.png" alt="Logo" class="navbar-brand img-fluid" style="max-height: 95px" />
+      <!-- Mostrar el nombre del usuario -->
+      <div class="position-relative me-4">
+        <?php if (isset($_SESSION['username'])) : ?>
+          <div class="position-absolute top-0 start-0 translate-middle p-2 text-white mt-4">
+            <?php echo $_SESSION['username']; ?>
           </div>
-
+        <?php endif; ?>
+        <img src="imagenes/default-profile-picture-male-icon.png" alt="Logo" class="navbar-brand img-fluid ms-5" style="max-height: 62px; cursor: pointer; filter: invert(1);" onclick="toggleMenu()">
+        <div class="menu-content position-absolute d-none me-5 bg-warning-subtle rounded  border border-5 border-black" id="menuContent" style="z-index: 1000;">
+          <!-- Opción 1: Cerrar Sesión -->
+          <a class="btn btn-link text-dark d-block text-truncate" href="index.php">Cerrar Sesión</a>
+          <!-- Opción 2: Cambiar Sesión -->
+          <!-- <a class="btn btn-link text-dark d-block text-truncate" href="">Cambiar Sesión</a> -->
         </div>
-    </nav>
-  </div>
-  <!-- fin barra horizontal -->
+      </div>
+    </div>
+  </nav>
+</div>
+<!-- fin barra horizontal -->
   <!-- Barra vertical -->
   <div class="container-fluid">
     <div class="row">
