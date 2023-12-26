@@ -21,6 +21,7 @@ if (isset($_POST['btnlogin'])) {
     if ($nr == 1 && password_verify($pass, $buscarpass['log_clave'])) {
         $rol = $buscarpass['fk_rol_id'];
         $estado = $buscarpass['fk_est_id'];
+        $_SESSION['username'] = $nombre;
         if ($estado == 1) {
             // Redirigir según el rol del usuario
             if ($rol == '1') {
