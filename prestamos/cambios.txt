@@ -1,0 +1,20 @@
+rango plazo 
+ran_plz_ncto tinyint 
+ran_plz_tiempo varchar
+
+estado_solicitud
+se borro cedula 
+
+garante_prestamo 
+se puso autoincrementable al pk_grt_pres_id
+
+
+en solicitud_prestamo para que pase estado de solicitud como 1 se añade el trigger
+
+CREATE DEFINER=`root`@`localhost` TRIGGER before_insert_solicitud_prestamo
+BEFORE INSERT ON solicitud_prestamo
+FOR EACH ROW
+BEGIN
+    -- Actualizar el campo fk_est_soli_id a 1 antes de la inserción
+    SET NEW.fk_est_soli_id = 1;
+END
