@@ -39,7 +39,7 @@
   </style>
 </head>
 <body>
-  <h2>Comprobantes</h2>
+  <h2>Comprobantes Ingresos</h2>
 
   <!-- Agregar formulario de filtro por fecha de pago -->
   <form method="get" action="">
@@ -139,6 +139,10 @@
           mysqli_close($conn);
         ?>
       </tbody>
+    </table>
+  </div>
+</body>
+</html>
     </table>
   </div>
 </body>
