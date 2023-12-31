@@ -59,9 +59,45 @@ $fechaActual = date("Y-m-d");
                             <input type="text" class="form-control" name="cedula" id="cedula" value="<?php echo isset($datosFormulario['cedula']) ? htmlspecialchars($datosFormulario['cedula']) : ''; ?>" required readonly>
                         </div>
                         <!-- fin campo cédula -->
+                        <!-- Datos de la cuenta socio -->
+                        <?php
+                        // Verificar si el saldo de la cuenta está establecido
+                        if (isset($datosFormulario['saldo_cuenta'])) {
+                            // Obtener el saldo de la cuenta y convertirlo a un número
+                            $saldoCuenta = floatval($datosFormulario['saldo_cuenta']);
+
+                            // Calcular el monto máximo sin garante (tres veces el saldo de la cuenta)
+                            $montoMaxSinGarante = $saldoCuenta * 3;
+
+                            // Verificar si el monto máximo sin garante excede los 6000
+                        if ($montoMaxSinGarante > 6000) {
+                            $aviso = "Solo se realizan préstamos hasta $6000";
+                        } else {
+                            $aviso = "";
+                            }
+                        } else {
+                            // Si el saldo de la cuenta no está establecido, asignar un valor predeterminado
+                            $montoMaxSinGarante = 0; // O cualquier otro valor por defecto
+                            $aviso = ""; // No se puede calcular sin el saldo de la cuenta
+                        }
+                        ?>
+
+                        <div class="col-md-3 d-flex align-items-center">
+                        <label for="saldo_cuenta" class="form-label">Dinero en cuenta</label>
+                        <input type="text" class="form-control" name="saldo_cuenta" id="saldo_cuenta" value="<?php echo isset($datosFormulario['saldo_cuenta']) ? htmlspecialchars($datosFormulario['saldo_cuenta']) : ''; ?>" readonly>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center">
+                        <label for="monto_maximo_sin_garante" class="form-label">Monto máximo sin garante</label>
+                        <input type="text" class="form-control" name="monto_maximo_sin_garante" id="monto_maximo_sin_garante" value="<?php echo number_format($montoMaxSinGarante, 2); ?>" readonly>
+                        <?php if (!empty($aviso)) : ?>
+                            <p class="aviso"><?php echo $aviso; ?></p>
+                        <?php endif; ?>
+                    </div>
+                        <!-- fin Datos de la cuenta socio -->
                     </div>
                     <!--  fin barra de busqueda -->
                 </div>
+
             </div>
             <!-- fin bucar socio -->
             <!-- Sección Vericacion Documentos -->
