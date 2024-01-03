@@ -1,30 +1,23 @@
-
 function validarFormulario() {
     // Obtener el valor del campo idSoc
     var idSocValue = document.getElementById("idSoc").value;
-
     // Verificar si el campo idSoc está vacío
     if (idSocValue.trim() === "") {
         // Mostrar un popover con el mensaje de error
         var mensajeErrorBuscar = "Debes buscar un socio para poder continuar.";
         mostrarPopover(mensajeErrorBuscar, document.getElementById("mensajeBuscarAlert"));
-
         // Evitar que el formulario se envíe
         return false;
     }
-
     // Obtener el valor del campo capital
     var capitalValue = document.getElementById("capital").value;
-
     // Convertir el valor a un número
     var capitalNumber = parseFloat(capitalValue.replace("$", ""));
-
     // Verificar si el capital es igual a 0
     if (capitalNumber === 0) {
         // Mostrar un popover con el mensaje de error
         var mensajeError = "El socio no mantiene saldo disponible en su cuenta.";
         mostrarPopover(mensajeError, document.getElementById("mensajeCapitalError"));
-
         // Evitar que el formulario se envíe
         return false;
     } else {
@@ -32,8 +25,6 @@ function validarFormulario() {
         return true;
     }
 }
-
-
 function mostrarPopover(mensaje, elemento) {
     if (mensaje.trim() !== "") {
         var popover = new bootstrap.Popover(elemento, {
@@ -41,25 +32,43 @@ function mostrarPopover(mensaje, elemento) {
             content: mensaje,
             placement: "right",
         });
-
         popover.show();
-
         setTimeout(function() {
             popover.hide();
         }, 3000);
     }
 }
+function deshabilitarCamposExcepto(exceptoCampo) {
+    $("#soliLiqui :input").each(function () {
+        // Deshabilita todos los campos excepto el campo especificado
+        if ($(this).attr("id") !== exceptoCampo) {
+            $(this).prop("disabled", true);
+        }
+    });
+}
+
+function habilitarCamposExcepto(exceptoCampo) {
+    // Verificar si el campo idSoc tiene datos
+    if ($("#idSoc").val() !== "") {
+      // Si idSoc tiene datos, habilitar todos los campos excepto el especificado
+      $("#soliLiqui :input").each(function () {
+        if ($(this).attr("id") !== exceptoCampo) {
+          $(this).prop("disabled", false);
+        }
+      });
+    }
+  }
+
+
 $(document).ready(function() {
     // Evento que se ejecuta cuando cambia el valor de tpLiqui
     $("#tpLiqui").change(function() {
         // Obtén el valor de tpLiqui
         var tpLiquiValue = $(this).val();
         console.log('Valor seleccionado:', tpLiquiValue);
-
         // Obtén el valor de idSoc
         var idSocValue = $("#idSoc").val();
         console.log('Valor de idSoc:', idSocValue);
-
         // Realiza la solicitud AJAX al servidor
         $.ajax({
             url: '../egresos/procesos.php',
@@ -70,7 +79,6 @@ $(document).ready(function() {
             },
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-
                 // Actualiza los campos en tu formulario con los datos obtenidos
                 $("#multas").val('$' + response.total_multas);
                 $("#prest").val('$' + response.sql_prestamos);
@@ -82,6 +90,18 @@ $(document).ready(function() {
                 console.error('Error al realizar la solicitud AJAX:', xhr, status, error);
             }
         });
-
     });
 });
+
+  
+  function habilitarCamposExcepto(exceptoCampo) {
+    // Verificar si el campo idSoc tiene datos
+    if ($("#idSoc").val() !== "") {
+      // Si idSoc tiene datos, habilitar todos los campos excepto el especificado
+      $("#miFormulario :input").each(function () {
+        if ($(this).attr("id") !== exceptoCampo) {
+          $(this).prop("disabled", false);
+        }
+      });
+    }
+  }
