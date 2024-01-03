@@ -1,12 +1,15 @@
 <?php
+
+// LLamado a los archivos parael funcionamiento del formulario 
 include('registroLiqui.php');
 include("../conexion.php");
 include('../buscar/guardar_dato.php');
-// Iniciar sesión si no está iniciada
+// Determina la fecha y zona horaria 
 date_default_timezone_set('America/Guayaquil');
-// Calcular la fecha 90 días después
+// Calcular fecha actual 
 $fechaActual = date("Y-m-d");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,10 +21,12 @@ $fechaActual = date("Y-m-d");
 </head>
 
 <body>
+    <!-- Contenedor Principal  -->
     <div class="container-fluid">
         <h5 class="text-center ">Liquidaciones</h5>
-        <form action="" method="POST" id="miFormulario" onsubmit="return validarFormulario()">
-            <!-- Bucar socio -->
+        <!-- Inicio del Formulario  -->
+        <form action="" method="POST" id="soliLiqui" onsubmit="return validarFormulario()">
+            <!-- Primer Card  -->
             <div class="card mb-1">
                 <div class="card-header fw-bold">
                     Datos Socio
@@ -29,10 +34,9 @@ $fechaActual = date("Y-m-d");
                 <div class="card-body">
                     <p id="mensajeBuscarAlert"></p>
                     <p id="mensajeCapitalError"></p>
+                    <!-- Fila con datos del Buscar socio  -->
                     <div class="row mb-2">
-
                         <?php include('../buscar/buscar.php'); ?>
-
                         <?php
                         // Mostrar el dato seleccionado
                         if (!empty($_SESSION['datos_formulario'])) {
@@ -40,7 +44,6 @@ $fechaActual = date("Y-m-d");
                             unset($_SESSION['datos_formulario']);
                         }
                         ?>
-                        <!-- Fila 1 -->
                         <!-- Campo id socio -->
                         <input type="hidden" class="form-control" name="idSoc" id="idSoc" value="<?php echo isset($datosFormulario['idSoc']) ? htmlspecialchars($datosFormulario['idSoc']) : ''; ?>" required readonly>
                         <!-- fin campo id socio -->
@@ -62,12 +65,12 @@ $fechaActual = date("Y-m-d");
                             <input type="text" class="form-control" name="cedula" id="cedula" value="<?php echo isset($datosFormulario['cedula']) ? htmlspecialchars($datosFormulario['cedula']) : ''; ?>" required readonly>
                         </div>
                         <!-- fin campo cédula -->
-                    </div>
+                    </div><!--Fin  Fila con datos del Buscar socio  -->
                 </div>
-            </div>
-            <!-- fin bucar socio -->
-            <!-- Datos Generales -->
-            <div class="card mb-1 b">
+            </div><!-- Fin primer Card -->
+
+            <!-- Segundo Card con Datos Generales -->
+            <div class="card mb-1 ">
                 <div class="card-header  fw-bolder">
                     Datos Generales
                 </div>
@@ -75,15 +78,15 @@ $fechaActual = date("Y-m-d");
                     <!-- Fila 1 -->
                     <div class="row mb-2 justify-content-center">
                         <!-- Campo fecha de solicitud -->
-                        <div class="col-md-5 d-flex ">
-                            <label for="fechaSol" class="form-label me-5 ">Fecha de Solicitud</label>
+                        <div class="col-md-4 d-flex ">
+                            <label for="fechaSol" class="form-label me-1">Fecha de Solicitud</label>
                             <input type="date" class="form-control w-50" name="fechaSol" id="fechaSol" value="<?php echo date("Y-m-d"); ?>" readonly>
                         </div>
                         <!-- fin campo fecha de solicitud  -->
                         <!-- Campo Causa de Liquidación-->
                         <div class="col-md-4 d-flex ">
-                            <label for="tpLiqui" class="form-label me-2">Causa de Liquidación</label>
-                            <select name="tpLiqui" id="tpLiqui" class="form-select w-50" required>
+                            <label for="tpLiqui" class="form-label me-1">Causa de Liquidación</label>
+                            <select name="tpLiqui" id="tpLiqui" class="form-select w-50" onchange="buscarSocio()" required>
                                 <option value=""> ---- </option>
                                 <?php
                                 // Consulta para obtener los datos de la tabla tipo de egresos
@@ -96,18 +99,9 @@ $fechaActual = date("Y-m-d");
                                 ?>
                             </select>
                         </div><!-- fin campo  Causa de Liquidación -->
-                    </div>
-                    <!-- Fila 2 -->
-                    <div class="row  justify-content-center">
-                        <!-- Campo fecha de desembolso -->
-                        <div class="col-md-5 d-flex ">
-                            <label for="fechaDes" class="form-label me-4">Fecha de Desembolso</label>
-                            <input type="date" class="form-control w-50" name="fechaDes" id="fechaDes" value="<?php echo date('Y-m-d', strtotime('+90 days')); ?>" readonly>
-                        </div>
-                        <!-- fin campo fecha de desembolso  -->
                         <!-- Campo medio de pago-->
                         <div class="col-md-4 d-flex ">
-                            <label for="tpPago" class="form-label me-5"> Medio de Pago</label>
+                            <label for="tpPago" class="form-label me-2"> Medio de Pago</label>
                             <select name="tpPago" id="tpPago" class="form-select w-50" required readonly>
                                 <?php
                                 // Consulta para obtener los datos de la tabla tipo de pago
@@ -119,17 +113,24 @@ $fechaActual = date("Y-m-d");
                                 }
                                 ?>
                             </select>
-                        </div><!-- fin campo  Causa de Liquidación -->
+                        </div><!-- fin campo tipo de pago -->
                     </div><!-- Fin Fila 1 -->
                 </div>
-            </div>
-            <div class="card">
+            </div><!-- Fin Segundo Card con Datos Generales -->
+
+            <!-- Tercer  Card con Calculos de liquidacion -->
+            <div class="card mb-2 ">
                 <div class="card-header fw-bold">
                     Bases del Cálculo de Liquidación
                 </div>
                 <div class="card-body">
                     <!-- Fila 1 -->
                     <div class="row mb-2  justify-content-center">
+                        <!--  Total de aportes de Capital  -->
+                        <div class="col-md-3 d-flex ">
+                            <label for="capital" class="form-label me-5"> Capital </label>
+                            <input type="text" class="form-control w-50 " name="capital" id="capital" disabled>
+                        </div><!-- Fin de aportes de Capital -->
                         <!-- Recargo de Multas -->
                         <div class="col-md-3 d-flex ">
                             <label for="multas" class="form-label pe-4"> Multas </label>
@@ -140,20 +141,14 @@ $fechaActual = date("Y-m-d");
                             <label for="prest" class="form-label me-1"> Préstamos </label>
                             <input type="text" class="form-control w-50" name="prest" id="prest" disabled>
                         </div><!-- Fin Recargo de prestamos -->
-                        <!-- Valor Total deduciones-->
-                        <div class="col-md-3 d-flex ">
-                            <label for="totalR" class="form-label me-1"> Descuento </label>
-                            <input type="text" class="form-control w-50" name="totalR" id="totalR" disabled>
-                        </div><!-- Valor Total deduciones -->
                     </div> <!-- Fin Fila 1 -->
                     <!--  Fila 2-->
                     <div class="row justify-content-center ">
-                        <!--  Total de aportes de Capital  -->
+                        <!-- Valor Total deduciones-->
                         <div class="col-md-3 d-flex ">
-                            <label for="capital" class="form-label pe-4"> Capital </label>
-                            <input type="text" class="form-control w-50 " name="capital" id="capital" disabled>
-
-                        </div><!-- Fin de aportes de Capital -->
+                            <label for="totalR" class="form-label me-4"> Descuento </label>
+                            <input type="text" class="form-control w-50" name="totalR" id="totalR" disabled>
+                        </div><!-- Valor Total deduciones -->
                         <!-- Div para espacio en medio-->
                         <div class="col-md-3 d-flex ">
                         </div><!-- Fin para espacio en medio -->
@@ -164,15 +159,15 @@ $fechaActual = date("Y-m-d");
                         </div><!-- Valor Total deduciones -->
                     </div><!-- Fin Fila 2-->
                 </div>
-            </div>
+            </div><!-- Fin Tercer  Card con Calculos de liquidacion -->
+
             <!-- Seccion  Botón  -->
             <div class="py-2 text-center">
                 <input type="submit" value="Registrar" id="btnRegistrar" name="btnRegistrar" class="btn btn-outline-success">
-                <input type="submit" value="Limpiar" class="btn btn-outline-success">
-                <input type="submit" value="Imprimir" class="btn btn-outline-success">
-                <input type="submit" value="Eliminar" class="btn btn-outline-success">
-            </div>
-        </form>
+                <input type="submit" value="Cancelar" id="btnCancelar" name="btnCancelar" class="btn btn-outline-success">
+            </div><!-- Fin Seccion  Botón  -->
+        </form><!-- Fin del Formulario  -->
+
         <!-- Contenedor de Alertas -->
         <div class="mt-1 d-flex justify-content-center">
             <?php
@@ -181,7 +176,7 @@ $fechaActual = date("Y-m-d");
                 echo '<div id="toastExito" class="w-25 toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">' .
                     '<div class="d-flex justify-content-center align-items-center">' . // Añadida clase "justify-content-center align-items-center"
                     '<div class="toast-body text-center">' . // Añadida clase "text-center"
-                    '<img src="../iconos/green-checkmark-icon.svg" alt="Icono de Socio" class="me-2" style="width: 24px; height: 24px;" />' .
+                    '<img src="iconos/green-checkmark-icon.svg" alt="Icono de Socio" class="me-2" style="width: 24px; height: 24px;" />' .
                     $_SESSION['mensajeExito'] .
                     '</div>' .
                     '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>' .
@@ -190,18 +185,21 @@ $fechaActual = date("Y-m-d");
                 unset($_SESSION['mensajeExito']); // Limpiar la variable de sesión
             }
             ?>
+        </div><!-- Fin  Contenedor de Alertas -->
+    </div> <!-- Fin Contenedor Principal  -->
 
-        </div>
-    </div>
-    <script src="../node_modules/jquery/dist/jquery.js "></script>
+    <!-- Librerias de JavaScript utilizadas  -->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../buscar/scrip.js"></script>
-    <script src="../egresos/valdLiqui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="valdLiqui.js"></script>
     <script>
         $(document).ready(function() {
             $("#toastExito").toast("show");
+            deshabilitarCamposExcepto("searchInput");
+            habilitarCamposExcepto("idSoc");
         });
-
     </script>
 </body>
 
