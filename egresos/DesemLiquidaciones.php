@@ -1,21 +1,20 @@
 <?php
 include('../conexion.php');
+
 // Verificar si se ha hecho clic en el botón Desembolso
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btnDesembolso"])) {
-    // Obtener el ID de la liquidación seleccionada
+    // Obtener el ID de la liquidación seleccionada y la fecha
     $idLiquidacion = isset($_POST['idLiquidacion']) ? intval($_POST['idLiquidacion']) : 0;
-
-    // Aquí puedes agregar la lógica para actualizar la base de datos según tus requerimientos.
-    // ...
+    $fechaDes = isset($_POST['fechaDes']) ? $_POST['fechaDes'] : '';
 
     // Iniciar una transacción
     $conn->begin_transaction();
 
     try {
-        // Actualizar el estado de la liquidación en la tabla egreso
-        $sqlUpdateEgreso = "UPDATE egreso SET fk_est_pg_pend = 1 WHERE pk_egre_id = ?";
+        // Actualizar la fecha y el estado de la liquidación en la tabla egreso
+        $sqlUpdateEgreso = "UPDATE egreso SET fk_est_pg_pend = 1, egre_fdesm = ? WHERE pk_egre_id = ?";
         $stmtUpdateEgreso = $conn->prepare($sqlUpdateEgreso);
-        $stmtUpdateEgreso->bind_param("i", $idLiquidacion);
+        $stmtUpdateEgreso->bind_param("si", $fechaDes, $idLiquidacion);
         $stmtUpdateEgreso->execute();
         $stmtUpdateEgreso->close();
 
