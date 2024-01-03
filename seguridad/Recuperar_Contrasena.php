@@ -1,53 +1,25 @@
 <?php
+session_start();
+include("conexion.php");
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'mail_reset.php'; 
-include 'conexion.php'; // Ajusta el nombre del archivo según tu estructura
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recuperar el nombre de usuario del formulario
-    $username = $_POST['username'];
-
-    // Consultar la base de datos para obtener la información del usuario
-    $sql = "SELECT * FROM login WHERE log_usuario = '$username'";
-    $result = mysqli_query($conn, $sql);
-
-    if ($result) {
-        $usuario = mysqli_fetch_assoc($result);
-
-        // Configurar PHPMailer
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'pedrosua141@gmail.com'; // Tu dirección de correo electrónico de Gmail
-        $mail->Password = 'edwwbjolswgipymz'; // Tu contraseña de Gmail
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-
-        // Configurar el contenido del correo
-        $mail->setFrom('pedrosua141@gmail.com', 'Tu Nombre');
-        $mail->addAddress('pedrosua141@gmail.com', 'Tu Nombre');
-        $mail->isHTML(true);
-        $mail->Subject = 'Recuperación de Contraseña';
-        $mail->Body = 'Usuario: ' . $usuario['username'] . '<br>Contraseña: ' . $usuario['password'];
-
-        // Enviar el correo
-        try {
-            $mail->send();
-            echo 'Correo enviado correctamente';
-        } catch (Exception $e) {
-            echo 'Error al enviar el correo: ', $mail->ErrorInfo;
-        }
-    } else {
-        echo 'Error al consultar la base de datos: ', mysqli_error($conn);
+// Ingresar al Sistema  
+if(isset($_POST['recuperar']))
+{
+    $nombre = $_POST['username'];
+    $queryusuario = mysqli_query($conn, "SELECT * FROM login WHERE log_usuario= '$nombre'");
+    $nr = mysqli_num_rows($queryusuario);
+    if($nr == 1){
+        include("mail_reset.php");
+        echo "<script>alert('Se envio una contraseña temporal a su correo');</script>";
+        // Puedes redirigir si es necesario
+        header("Location: index.php");
+        exit(); // Asegurarse de que el script se detenga aquí
+    }
+    else {
+        echo "<script>alert('Usuario ingresado incorrecto');</script>";
     }
 }
 
-// Cerrar la conexión a la base de datos
-mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,10 +29,10 @@ mysqli_close($conn);
     <title>Recuperar Contraseña</title>
 </head>
 <body>
-    <form action="recuperar_contrasena.php" method="post">
+    <form action="" method="post" class="d-flex flex-column  justify-content-center">
         <label for="username">Nombre de Usuario:</label>
         <input type="text" id="username" name="username" required>
-        <button type="submit">Recuperar Contraseña</button>
+        <button type="submit" name="recuperar" class="bg-white px-3 rounded-5">Recuperar Contraseña</button>
     </form>
 </body>
 </html>
