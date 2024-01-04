@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("conexion.php");
+include("../conexion.php");
 
 // Ingresar al Sistema  
 if(isset($_POST['recuperar']))
@@ -19,7 +19,6 @@ if(isset($_POST['recuperar']))
         echo "<script>alert('Usuario ingresado incorrecto');</script>";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
