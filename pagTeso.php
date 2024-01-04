@@ -127,7 +127,19 @@ if (!isset($_SESSION)) {
               </div>
             </div>
           </li>
-
+          <!-- Dropdown para Comprobantes -->
+          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/balance-sheet-icon.svg" alt="Icono de Reportes" class="mr-2 w-25" />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Comprobante
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#"id="comprobantelink">Comprobante </a>
+                
+              </div>
+            </div>
+          </li>
 
 
         </ul>
@@ -239,6 +251,11 @@ if (!isset($_SESSION)) {
     $("#regMultLink").on("click", function(e) {
       e.preventDefault();
       cargarContenidoMostrar("ingresos/formMultas.php");
+    });
+     // Manejar el clic en "comprobante"
+     $("#comprobantelink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("comprobantes/tipocomprobante.php");
     });
   </script>
 </body>
