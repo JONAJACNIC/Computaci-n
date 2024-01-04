@@ -1,30 +1,27 @@
 <?php
+// Incluir archivo de conexión a la base de datos
+include('../conexion.php');
+if (isset($_POST['btnAprobar'])) {
+    // Obtener el ID de la aprobación desde la solicitud POST
+    $idAprobacion = $_POST['idAprobacion'];
+    // Supongamos que el campo que indica el estado de la solicitud en la tabla
+    $sqlAprobacion = "UPDATE solicitud_prestamo SET fk_est_soli_id = 2 WHERE fk_sc_id = $idAprobacion";
 
-$socioId = $_POST['socioId'];
-
-// Connect to the database
-$conexion = mysqli_connect("localhost", "root", "", "crisol");
-
-// Update the estado_soli field to 2 (approved)
-$sql = "UPDATE solicitud_prestamo SET fk_est_soli_id = 2 WHERE fk_sc_id = $socioId";
-
-if (mysqli_query($conexion, $sql)) {
-    // Update the aprobacion table
-    $fechaActual = date("Y-m-d");
-    $aprobacionDet = "Sin observaciones";
-    $crgId = 1;
-
-    $sql = "INSERT INTO aprobacion (aprob_fech, aprob_det, fk_crg_id, fk_soli_pres_id)
-                          VALUES ('$fechaActual', '$aprobacionDet', $crgId, $socioId)";
-
-    if (mysqli_query($conexion, $sql)) {
-        echo "success";
+    if ($conn->query($sqlAprobacion) === TRUE) {
+        // Si la actualización se realizó con éxito, enviar una respuesta JSON al cliente
+        $response = array('success' => true, 'message' => '¡Prestamo realizado con éxito!');
+        echo json_encode($response);
     } else {
-        echo "error";
+        // Si hubo un error en la actualización, enviar una respuesta de error al cliente
+        $response = array('success' => false, 'message' => 'Error al realizar el Prestamo: ' . $conn->error);
+        echo json_encode($response);
     }
 } else {
-    echo "error";
+    // Si no se envió el formulario correctamente, enviar una respuesta de error al cliente
+    $response = array('success' => false, 'message' => 'Error en la solicitud de Prestamo.');
+    echo json_encode($response);
 }
 
-mysqli_close($conexion);
+// Cerrar la conexión a la base de datos
+$conn->close();
 ?>
