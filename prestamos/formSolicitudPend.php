@@ -3,148 +3,161 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <title>Solicitudes Pendientes</title>
+    <link rel="stylesheet" href="../style.css">
+    
 </head>
 
 <body>
     <div class="container-fluid">
-    <h5 class="text-center ">  Solicitudes Pendientes </h5>
+        <h5 class="text-center"> Solicitudes Pendientes </h5>
         <div class="card">
             <div class="card-header fw-bold">
-               Información 
-               <br>
-                    <?php
-                    $conexion = mysqli_connect("localhost", "root", "", "crisol");
-
-                    $query = "SELECT SUM(cta_val) AS suma_valores FROM cuenta_caja ORDER BY pk_cta_id LIMIT 4";
-                    $result = mysqli_query($conexion, $query);
-
-                    if ($result) {
-                        $row = mysqli_fetch_assoc($result);
-                        $suma_valores = $row['suma_valores'];
-                        echo "Fondos de la Caja Disponibles: " . $suma_valores;
-                    } else {
-                        echo "Error al obtener la suma de valores.";
-                    }
-
-                    mysqli_close($conexion);
-                    ?>
+                Información
             </div>
             <div class="card-body">
-                <!-- Barra de busqueda -->
+                <!-- Barra de búsqueda -->
                 <div class="row mb-2">
-                <form class="d-flex">
-                     <input class="form-control me-2 light-table-filter" data-table="table_id" type="text" 
-                    placeholder="Buscar">
-                </form>
-                <br>
-                    <table class="table table-condensed table-bordered table-striped text-center table_id">
+                    <!-- Campo nombres -->
+                    <div class="col-md-3 d-flex align-items-center py-3">
+                        <label for="buscar" class="form-label">Buscar</label>
+                        <input type="text" class="form-control" name="buscar" id="buscar" placeholder="" readonly>
+                    </div>
+                    <table class="table table-condensed table-bordered table-striped text-center">
                         <thead>
                             <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Cédula</th>
-                            <th>Monto Solicitado</th>
-                            <th>Fecha Solicitud</th>
-                            <th>Tipo Préstamo</th>
-                            <th>Estado Préstamo</th>
-                            <th>Aprobaciones</th>
-                        
-                        </tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Cédula</th>
+                                <th>Monto Solicitado</th>
+                                <th>Fecha Solicitud</th>
+                                <th>Tipo Préstamo</th>
+                                <th>Estado Préstamo</th>
+                                <th>Aprobaciones</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            
-				<?php
-                     $conexion=mysqli_connect("localhost","root","","crisol");
-                     $SQL = "SELECT socio.pk_sc_id, socio.sc_nombre, socio.sc_apellido, socio.sc_cedula, solicitud_prestamo.soli_pres_montSolic, solicitud_prestamo.soli_pres_fech,
-                     tipo_prestamo.tp_pres_dsc, estado_solicitud.est_soli_dsc
-                     FROM socio
-                     INNER JOIN solicitud_prestamo ON socio.pk_sc_id = solicitud_prestamo.fk_sc_id
-                     INNER JOIN tipo_prestamo ON solicitud_prestamo.fk_tp_pres_id = tipo_prestamo.pk_tp_pres_id
-                     LEFT JOIN estado_solicitud ON solicitud_prestamo.fk_est_soli_id = estado_solicitud.pk_est_soli_id
-                     WHERE estado_solicitud.pk_est_soli_id = 1  -- Filter for approved requests
-                     ORDER BY solicitud_prestamo.pk_soli_pres_id ASC;";
+                            <?php
+                            include('../conexion.php');
+                            $sql = "SELECT socio.pk_sc_id, socio.sc_nombre, socio.sc_apellido, socio.sc_cedula, solicitud_prestamo.soli_pres_montSolic, solicitud_prestamo.soli_pres_fech,
+                            tipo_prestamo.tp_pres_dsc, estado_solicitud.est_soli_dsc
+                            FROM socio
+                            INNER JOIN solicitud_prestamo ON socio.pk_sc_id = solicitud_prestamo.fk_sc_id
+                            INNER JOIN tipo_prestamo ON solicitud_prestamo.fk_tp_pres_id = tipo_prestamo.pk_tp_pres_id
+                            LEFT JOIN estado_solicitud ON solicitud_prestamo.fk_est_soli_id = estado_solicitud.pk_est_soli_id
+                            WHERE estado_solicitud.pk_est_soli_id = 1 
+                            ORDER BY solicitud_prestamo.pk_soli_pres_id ASC;";
 
-                        $dato = mysqli_query($conexion, $SQL);
-
-                        if($dato -> num_rows >0){
-                            while($fila=mysqli_fetch_array($dato)){
-                            
-                        ?>
-                        <tr>
-                        <td><?php echo $fila['sc_nombre']; ?></td>
-                        <td><?php echo $fila['sc_apellido']; ?></td>
-                        <td><?php echo $fila['sc_cedula']; ?></td>
-                        <td><?php echo $fila['soli_pres_montSolic']; ?></td>
-                        <td><?php echo $fila['soli_pres_fech']; ?></td>
-                        <td><?php echo $fila['tp_pres_dsc']; ?></td>
-                        <td><?php echo $fila['est_soli_dsc']; ?></td>
-
-
-                    <td>
-                    <button type="button" class="btn btn-success btn-aprobacion" data-socioid="<?php echo $fila['pk_sc_id']; ?>">Aprobar</button>
-                    </td>
-                    </tr>
-
-
-            <?php
-            }
-            }else{
-
-                ?>
-                <tr class="text-center">
-                <td colspan="16">No existen registros</td>
-                </tr>
-
-                
-                <?php
-    
-                }
-
-?>
-                       </tbody>
+                            $result = $conn->query($sql);
+                            // Mostrar datos en la tabla
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr id='row_" . $row['pk_sc_id'] . "'>";
+                                echo "<td>" . $row['sc_nombre'] . "</td>";
+                                echo "<td>" . $row['sc_apellido'] . "</td>";
+                                echo "<td>" . $row['sc_cedula'] . "</td>";
+                                echo "<td>" . $row['soli_pres_montSolic'] . "</td>";
+                                echo "<td>" . $row['soli_pres_fech'] . "</td>";
+                                echo "<td>" . $row['tp_pres_dsc'] . "</td>";
+                                echo "<td>" . $row['est_soli_dsc'] . "</td>";
+                                echo "<td><button class='btn btn-outline-success btnAprobar' data-id='" . $row['pk_sc_id'] . "'>Aprobar</button></td>";
+                                echo "</tr>";
+                            }
+                            // Cerrar la conexión
+                            $conn->close();
+                            ?>
+                        </tbody>
                     </table>
- 
-                    </div>
                 </div>
             </div>
         </div>
+        <!-- Agregar un modal para confirmar la aprobación -->
+        <div class="modal fade" id="aprobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmar Aprobación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Seleccione resposnsables de aprobación?
+                        <?php
+                        include('../conexion.php');
+                        // Consulta SQL para obtener los datos de la tabla cargo_socio
+                        $sql = "SELECT pk_crg_id, crg_dsc FROM cargo_socio";
+                        $result = $conn->query($sql);
+
+                        // Verificar si hay resultados
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $pk_crg_id = $row['pk_crg_id'];
+                                $crg_dsc = $row['crg_dsc'];
+
+                                // Imprimir el HTML para cada checkbox con los datos de la base de datos
+                                echo '<div class="form-check">';
+                                echo '<input class="form-check-input" type="checkbox" id="checkbox_' . $pk_crg_id . '" name="checkbox[]" value="' . $pk_crg_id . '">';
+                                echo '<label class="form-check-label" for="checkbox_' . $pk_crg_id . '">' . $crg_dsc . '</label>';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo "No se encontraron cargos de socio en la base de datos.";
+                        }
+
+                        // Cerrar la conexión a la base de datos
+                        $conn->close();
+                        ?>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-success" id="btnConfirmarAprobacion">Sí</button>
+                    </div>
+            </div>
+        </div>
     </div>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.btn-aprobacion').click(function() {
-                var socioId = $(this).data('socioid');
+            // Mostrar el modal al hacer clic en el botón Aprobar
+            $('.btnAprobar').on('click', function() {
+                var idAprobacion = $(this).data('id');
 
-                if (confirm('¿Está seguro de que desea aprobar el préstamo para este socio?')) {
-                    $.ajax({
-                        url: 'aprobar_prestamo.php',
-                        method: 'POST',
-                        data: { socioId: socioId },
-                        success: function(response) {
-                            if (response == 'success') {
-                                alert('Préstamo aprobado exitosamente!');
-                                location.reload(); // Reload the page to reflect the change
-                            } else {
-                                alert('Error al aprobar el préstamo.');
-                            }
+                // Configurar el modal para enviar el ID de la aprobación
+                $('#btnConfirmarAprobacion').data('idAprobacion', idAprobacion);
+
+                // Mostrar el modal
+                $('#aprobModal').modal('show');
+            });
+
+            // Manejar el clic en el botón Sí en el modal
+            $('#btnConfirmarAprobacion').on('click', function() {
+                var idAprobacion = $(this).data('idAprobacion');
+
+                // Enviar la solicitud AJAX para realizar la aprobación
+                $.ajax({
+                    type: 'POST',
+                    url: '../prestamos/aprobar_Prestamo.php', // Ruta correcta a tu script PHP para aprobar el préstamo
+                    data: { btnAprobar: true, idAprobacion: idAprobacion },
+                    dataType: 'json',
+                    success: function(response) {
+                        // Manejar la respuesta del servidor
+                        if (response.success) {
+                            alert(response.message); // Puedes usar una modalidad diferente para mostrar mensajes
+                            // Eliminar la fila de la tabla
+                            $('#row_' + idAprobacion).remove();
+                        } else {
+                            alert('Error al realizar la aprobación.');
                         }
-                    });
-                }
+                        // Cerrar el modal después de la respuesta del servidor
+                        $('#aprobModal').modal('hide');
+                    },
+                    error: function() {
+                        alert('Error en la solicitud AJAX.');
+                    }
+                });
             });
         });
     </script>
-    <script src="node_modules/jquery/dist/jquery.js "></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-    <script src="../prestamos/buscadorSoliPen.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
 </body>
+
 </html>
