@@ -109,7 +109,7 @@
                 </div>
                 <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-success" id="btnConfirmarAprobacion">Sí</button>
+                        <button type="button" class="btn btn-success" id="btnConfirmarAprobacion" disabled>Sí</button>
                     </div>
             </div>
         </div>
@@ -118,6 +118,17 @@
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Manejar el cambio en los checkboxes
+                $('input[name="checkbox[]"]').on('change', function() {
+                // Verificar si al menos dos están seleccionados
+                if ($('input[name="checkbox[]"]:checked').length >= 2) {
+                    // Habilitar el botón
+                    $('#btnConfirmarAprobacion').prop('disabled', false);
+                } else {
+                    // Deshabilitar el botón si no se cumple la condición
+                    $('#btnConfirmarAprobacion').prop('disabled', true);
+                }
+            });
             // Mostrar el modal al hacer clic en el botón Aprobar
             $('.btnAprobar').on('click', function() {
                 var idAprobacion = $(this).data('id');
