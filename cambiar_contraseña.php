@@ -21,15 +21,23 @@ if (isset($_POST['validar_cambiar'])) {
                 // Longitud mínima de la nueva contraseña y requisitos adicionales
                 $nuevaContrasenaHash = password_hash($nuevaContrasena, PASSWORD_DEFAULT);
                 mysqli_query($conn, "UPDATE `login` SET `log_clave` = '$nuevaContrasenaHash' WHERE log_usuario = '$nombreUsuario'");
-                echo "<script>alert('Contraseña cambiada exitosamente.');</script>";
+                echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+                Contraseña cambiada exitosamente.
+                 </div>';
             } else {
-                echo "<script>alert('La nueva contraseña no cumple con los requisitos.');</script>";
+                echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+                La nueva contraseña no cumple con los requisitos.
+                 </div>';
             }
         } else {
-            echo "<script>alert('Las nuevas contraseñas no coinciden.');</script>";
+                echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+                Las nuevas contraseñas no coinciden.
+                 </div>';
         }
     } else {
-        echo "<script>alert('Contraseña actual incorrecta.');</script>";
+        echo '<div class="alert alert-primary fixed-bottom fixed-right m-2"  role="alert">
+        Contraseña actual incorrecta.
+         </div>';
     }
 }
 ?>
@@ -79,13 +87,15 @@ if (isset($_POST['validar_cambiar'])) {
                         <div class="form-group mb-4">
                             <input type="password" id="contrasena_ingresada" name="contrasena_ingresada"
                                    class="form-control" placeholder="Contraseña actual" required>
-                            <a data-ui="action_forgot_password" href="Recuperar_Contrasena.php">¿Olvidaste tu contraseña?</a>
+                                   <button type="button" onclick="togglePasswordVisibility('nueva_contrasena', 'eyeIcon1')" >
+                            <i id="eyeIcon1" class="fas fa-eye"></i> 
+                         
                         </div>
                         <div class="form-group mb-4">
                             <input type="password" id="nueva_contrasena" name="nueva_contrasena"
-                                   class="form-control" placeholder="Nueva Contraseña" minlength="8" required>
-                            <button type="button" onclick="togglePasswordVisibility('nueva_contrasena', 'eyeIcon1')">
-                                <i id="eyeIcon1" class="fas fa-eye"></i>
+                                   class="form-control" placeholder="Nueva Contraseña" minlength="8" required >
+                            <button type="button" onclick="togglePasswordVisibility('nueva_contrasena', 'eyeIcon1')" >
+                            <i id="eyeIcon1" class="fas fa-eye"></i> 
                             </button>
                         </div>
                         <div class="form-group mb-4">
@@ -96,7 +106,8 @@ if (isset($_POST['validar_cambiar'])) {
                             </button>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button type="submit" name="validar_cambiar" class="btn btn-outline-success">Cambiar Contraseña</button>                            
+                            <button type="submit" name="validar_cambiar" class="btn btn-outline-success">Cambiar Contraseña</button>     
+                            <a data-ui="action_forgot_password" href="Recuperar_Contrasena.php">¿Olvidaste tu contraseña?</a>                       
                         </div>
                     </form>
                 </div>
