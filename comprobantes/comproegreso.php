@@ -70,15 +70,16 @@
           // Obtener el valor del filtro por mes
           $filtro_mes = isset($_GET['mes']) ? $_GET['mes'] : '';
 
-          $sentencia_sql = "SELECT egre_val, egre_fech_ini,egre_fdesm, fk_tp_egre_id, fk_sc_id,
-            sc_nombre, sc_apellido, sc_cedula,
-            tp_egre_dsc
-            FROM egreso
-            INNER JOIN socio
-            ON egreso.fk_sc_id = socio.pk_sc_id
-            INNER JOIN tipo_egreso
-            ON egreso.fk_tp_egre_id = tipo_egreso.pk_tp_egre_id
-            ORDER BY sc_cedula, egre_fech_ini;";
+          $sentencia_sql = "SELECT egre_val, egre_fech_ini, egre_fdesm, fk_tp_egre_id, fk_sc_id,
+    sc_nombre, sc_apellido, sc_cedula,
+    tp_egre_dsc
+    FROM egreso
+    INNER JOIN socio
+    ON egreso.fk_sc_id = socio.pk_sc_id
+    INNER JOIN tipo_egreso
+    ON egreso.fk_tp_egre_id = tipo_egreso.pk_tp_egre_id
+    WHERE egreso.fk_est_pg_pend = 1  -- Añadir esta condición para filtrar por activo
+    ORDER BY sc_cedula, egre_fech_ini;";
 
           $resultado = mysqli_query($conn, $sentencia_sql);
 
@@ -145,3 +146,4 @@
   </div>
 </body>
 </html>
+
