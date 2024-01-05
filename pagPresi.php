@@ -43,6 +43,7 @@ if (!isset($_SESSION)) {
         <div class="menu-content position-absolute d-none me-5 bg-warning-subtle rounded  border border-5 border-black" id="menuContent" style="z-index: 1000;">
           <!-- Opción 1: Cerrar Sesión -->
           <a class="btn btn-link text-dark d-block text-truncate" href="index.php">Cerrar Sesión</a>
+          <a class="btn btn-link text-dark d-block " href="#" id="contrasenaLink">Cambiar Contraseña</a>
           <!-- Opción 2: Cambiar Sesión -->
           <!-- <a class="btn btn-link text-dark d-block text-truncate" href="">Cambiar Sesión</a> -->
         </div>
@@ -57,51 +58,97 @@ if (!isset($_SESSION)) {
       <div class="col-sm-2 bg-primary position-fixed h-100">
         <h3 class="text-white">Menú</h3>
         <ul class="list-group d-flex flex-column mt-3">
-     
+
+        <!-- Dropdown para Administrador -->
+        <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/administrator-developer-icon.svg" alt="Icono de Administrador" class="mr-2 w-25 " />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Admin
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" id ="admRolLink">Administrar Rol</a>
+              </div>
+            </div>
+          </li>
+          <!-- Dropdown de Inicio -->
+          <li class=" d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/house-hand-mortgage-icon.svg" alt="Icono de Socio" class="w-25 h-25" />
+            <div>
+              <button class="btn btn-primary btn-lg " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Inicio
+              </button>
+            </div>
+          </li>
+          <!-- Dropdown para Socios -->
+          <li class=" d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/male-icon.svg" alt="Icono de Socio" class="w-25 h-25" />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Socios
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" id="nuevoSocioLink">Nuevo Socio</a>
+                <a class="dropdown-item" href="#" id="actuSocioLink">Actualizar Socio</a>
+              </div>
+            </div>
+          </li>
+
+          <!-- Dropdown para Ingresos -->
+          <li class=" d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/hand-holding-dollar-solid.svg" alt="Icono de Ingresos" class=" w-25" />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg " type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Ingresos
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" id="pagAporLink">Pago Aportes</a>
+                <a class="dropdown-item" href="#">Definir</a>
+              </div>
+            </div>
+          </li>
+
+          <!-- Dropdown para Egresos -->
+          <li class="  d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/pay-money-icon.svg" alt="Icono de Egresos" class="mr-2 w-25" />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg " type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Egresos
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" id="liquiSocioLink">Liquidación</a>
+                <a class="dropdown-item" href="#">Caja Chica</a>
+              </div>
+            </div>
+          </li>
 
           <!-- Dropdown para Préstamos -->
           <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
             <img src="iconos/income-tax-icon.svg" alt="Icono de Préstamos" class="mr-2 w-25" />
             <div class="dropdown">
               <button class="btn btn-primary btn-lg " type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Aprobaciones Prestamos  
-              </button> 
-              <!-- <div class="dropdown-menu">
-                <a class="dropdown-item" href="#" id="soliPresLink">Aprobaciones Prestamos  </a>
-                <a class="dropdown-item" href="#">Aprobacion Liquidadciones </a>
-                <a class="dropdown-item" href="#">Aprobacion Caja Chica</a>
-              </div> -->
-            </div>
-          </li>
-
-          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
-            <img src="iconos/income-tax-icon.svg" alt="Icono de Préstamos" class="mr-2 w-25" />
-            <div class="dropdown">
-              <button class="btn btn-primary btn-lg " type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Aprobacion Liquidadciones 
-              </button> 
-              <!-- <div class="dropdown-menu"> -->
-                <!-- <a class="dropdown-item" href="#" id="soliPresLink">Aprobaciones Prestamos  </a>
-                <a class="dropdown-item" href="#">Aprobacion Liquidadciones </a>
-                <a class="dropdown-item" href="#">Aprobacion Caja Chica</a> -->
-              <!-- </div> -->
-            </div>
-          </li>
-
-          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
-            <img src="iconos/income-tax-icon.svg" alt="Icono de Préstamos" class="mr-2 w-25" />
-            <div class="dropdown">
-              <button class="btn btn-primary btn-lg " type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Aprobacion Caja Chica
-              </button> 
+                Préstamos
+              </button>
               <div class="dropdown-menu">
-                <!-- <a class="dropdown-item" href="#" id="soliPresLink">Aprobaciones Prestamos  </a>
-                <a class="dropdown-item" href="#">Aprobacion Liquidadciones </a>
-                <a class="dropdown-item" href="#">Aprobacion Caja Chica</a> -->
+                <a class="dropdown-item" href="#" id="soliPresLink">Solicitud Préstamo</a>
+                <a class="dropdown-item" href="#">Definir</a>
               </div>
             </div>
           </li>
 
+          <!-- Dropdown para Reportes -->
+          <li class="d-flex align-items-center bg-primary m-2 border-bottom border-white border-1">
+            <img src="iconos/balance-sheet-icon.svg" alt="Icono de Reportes" class="mr-2 w-25" />
+            <div class="dropdown">
+              <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Reportes
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Definir</a>
+                <a class="dropdown-item" href="#">Definir</a>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
@@ -129,8 +176,45 @@ if (!isset($_SESSION)) {
       $("#contenidoContainer").show(); // Mostrar el contenedor al cargar el contenido
     }
 
-    
-  </script>
-</body>
+    // Manejar el clic en "Nuevo Socio"
+    $("#nuevoSocioLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("socios/formNueSc.php");
+    });
+    // Manejar el clic en "Actualizar información socio"
+    $("#actuSocioLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("socios/formActSc.php");
+    });
 
+    // Manejar el clic en "Liquidación"
+    $("#liquiSocioLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("formLiqui.php");
+    });
+
+    // Manejar el clic en "Socicitud préstamo"
+    $("#soliPresLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("formPres.php");
+    });
+
+    // Manejar el clic en "Pago aportes"
+    $("#pagAporLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("formPagApor.php");
+    });
+
+ // Manejar el clic en "Administrar Rol"
+ $("#admRolLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("seguridad/formAdmRol.php");
+    });
+ // Manejar el clic en "Cambiar contraseña"
+ $("#contrasenaLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("seguridad/cambiar_contraseña.php");
+    });
+</script>
+</body>
 </html>
