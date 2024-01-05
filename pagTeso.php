@@ -43,6 +43,7 @@ if (!isset($_SESSION)) {
         <div class="menu-content position-absolute d-none me-5 bg-warning-subtle rounded  border border-5 border-black" id="menuContent" style="z-index: 1000;">
           <!-- Opción 1: Cerrar Sesión -->
           <a class="btn btn-link text-dark d-block text-truncate" href="index.php">Cerrar Sesión</a>
+          <a class="btn btn-link text-dark d-block " href="cambiar_contraseña.php" id="contrasenaLink">Cambiar Contraseña</a>
           <!-- Opción 2: Cambiar Sesión -->
           <!-- <a class="btn btn-link text-dark d-block text-truncate" href="">Cambiar Sesión</a> -->
         </div>
@@ -256,6 +257,11 @@ if (!isset($_SESSION)) {
      $("#comprobantelink").on("click", function(e) {
       e.preventDefault();
       cargarContenidoMostrar("comprobantes/tipocomprobante.php");
+    });
+     // Manejar el clic en "Cambiar contraseña"
+    $("#contrasenaLink").on("click", function(e) {
+      e.preventDefault();
+      cargarContenidoMostrar("cambiar_contraseña.php");
     });
   </script>
 </body>
