@@ -213,7 +213,7 @@ if (!isset($_SESSION)) {
  // Manejar el clic en "Cambiar contraseña"
  $("#contrasenaLink").on("click", function(e) {
       e.preventDefault();
-      cargarContenidoMostrar("seguridad/cambiar_contraseña.php");
+      cargarContenidoMostrar("cambiar_contraseña.php");
     });
 </script>
 </body>
