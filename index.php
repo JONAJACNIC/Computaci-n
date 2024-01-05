@@ -173,7 +173,7 @@ if (isset($_POST['btnlogin'])) {
                     <input type="text" class="rounded-5 mb-2" placeholder="Usuario" data-placeholder="Usuario" name="txtusuario" id="txtusuario" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
                     <input type="password" class="rounded-5 mb-2" placeholder="Contraseña" data-placeholder="Contraseña" name="txtpassword" id="txtpassword" onfocus="hidePlaceholder(this)" onblur="showPlaceholder(this)" autocomplete="off">
                     <button type="submit" name="btnlogin" class="bg-white px-3 rounded-5">Ingresar</button>
-                    <center><a style="color: #FFFBFB" href="Recuperar_Contrasena.php" class="forgot-password">¿Olvidaste tu contraseña?</a></center>
+                    <center><a style="color: #FFFBFB" href="seguridad/Recuperar_Contrasena.php" class="forgot-password">¿Olvidaste tu contraseña?</a></center>
 
             </div>
         </div>
