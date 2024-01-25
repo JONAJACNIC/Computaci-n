@@ -31,10 +31,10 @@ include('regtSc.php');
                         <div class="row pb-1">
                             <!-- Campo cédula -->
                             <div class="col-md-3 d-flex align-items-center">
-                                <label for="cedula" class="form-label me-3">Cédula<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control w-75" name="cedula" id="cedula" maxlength="10" onkeypress="return soloNumeros(event)" autocomplete="off" required>
-                                <p id="mensajeResultado"></p>
-                            </div>
+                            <label for="cedula" class="form-label me-3">Cédula<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control w-75" name="cedula" id="cedula" maxlength="10" onkeypress="return soloNumeros(event)" autocomplete="off" required>
+                            <p id="mensajeResultado"></p>
+                        </div>
                             <!-- fin campo cédula -->
                             <!-- Campo fecha nacimiento -->
                             <div class="col-md-4 d-flex  align-items-center">
